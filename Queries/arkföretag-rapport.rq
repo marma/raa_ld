@@ -1,0 +1,16 @@
+PREFIX egenskap: <https://kulturarvsdata.se/egenskap/>
+PREFIX typ: <https://kulturarvsdata.se/kategori/>
+PREFIX aktivitet: <https://kulturarvsdata.se/aktivitet/>
+PREFIX uppdrag: <https://kulturarvsdata.se/aktivitet/uppdrag/>
+PREFIX ärende: <https://kulturarvsdata.se/aktivitet/ärende/>
+PREFIX rapport: <https://kulturarvsdata.se/dokumentation/rapport/>
+PREFIX org: <https://kulturarvsdata.se/aktör/organisation/>
+PREFIX uppdragstyp: <https://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/>
+
+SELECT DISTINCT ?företag ?rapport
+WHERE {
+  ?uppdrag ?utförare ?arkorg ;
+           egenskap:dokumenterad ?rapport .
+  ?arkorg a typ:Organisation ;
+           egenskap:namn ?företag .
+  }
