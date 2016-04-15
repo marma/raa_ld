@@ -1,0 +1,46 @@
+{
+    "@context": {
+        "@vocab": "https://kulturarvsdata.se/egenskap/",
+        "org": "https://kulturarvsdata.se/aktör/organisation/",
+        "typ": "https://kulturarvsdata.se/kategori/",
+        "ärendenr": {
+            "@id": "https://kulturarvsdata.se/aktivitet/ärende/",
+            "@type": "@id"
+        },
+        "organisation": {
+            "@id": "organisation",
+            "@type": "@id"
+        },
+        "ärende": {
+            "@id": "ärende",
+            "@type": "@id"
+        }
+    },
+
+    "@graph": [
+        {
+            "@id": "org:202100-2247",
+            "@type": "typ:Organisation",
+            "namn": "Länsstyrelsen i Stockholm",
+            "organisation_nr": "202100-2247"
+        },
+        {
+            "@id": "org:814801-2019",
+            "@type": "typ:Organisation",
+            "namn": "ARKEOLOGIKONSULT ROGER BLIDMO AB:S SÄRSK PENSSTI",
+            "organisation_nr": "814801-2019"
+        },
+        {
+            "@id": "uppdrag:01b2bce8-011b-4f7e-bca3-97dd84e50f14",
+            "@type": "uppdragstyp:ArkeologiskUndersökning",
+            "utförare": "org:814801-2019",
+            "ärende": "ärendenr:S2011-123"
+        },
+        {
+            "@id": "ärendenr:S2011-123",
+            "@type": "typ:Ärende",
+            "diarienummer": "S2011-123",
+            "organisation": "org:202100-2247"
+        }
+    ]
+}
