@@ -1,0 +1,34 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+   mavenCentral()
+}
+
+dependencies {
+    compile "javax.servlet:servlet-api:2.5"
+    compile "com.github.jsonld-java:jsonld-java:0.8.2"
+    compile "org.json:json:20151123"
+}
+
+sourceSets {
+    main {
+      java { srcDir 'src/main/java' }
+    }
+}
+
+war {
+    archiveName = "ROOT.war"
+}
+
+jettyRun {
+    contextPath = ""
+}
