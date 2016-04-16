@@ -8,17 +8,18 @@ import javax.servlet.http.*;
 
 import org.json.*;
 import org.apache.jena.rdf.model.*;
+import org.apache.http.client.fluent.*;
 
 /**
  * @author marma
  */
 public class UpdateEntity extends HttpServlet {
-    static String sparqlEndpoint = null;
+    static String updateEndpoint = null;
     static JSONObject context = null;
 
     @Override
     public void init(ServletConfig config) {
-        sparqlEndpoint = config.getServletContext().getInitParameter("SparqlEndpoint");
+        updateEndpoint = config.getServletContext().getInitParameter("UpdateEndpoint");
 
         // Load @context from file
         JSONTokener tokener = new JSONTokener(config.getServletContext().getResourceAsStream("/context.json"));
@@ -36,6 +37,10 @@ public class UpdateEntity extends HttpServlet {
             entity.put("@context", context);
             String jsonld = entity.toString();
 
+            // find page used for removing old statements from triple store
+            // @TODO Either enforce complete IRI in @id or expand it
+            String page = entity.get("@id").toString() + "/data";
+
             // Read JSON-LD into a Model
             Model model = ModelFactory.createDefaultModel();
             model.read(new StringReader(jsonld), null, "JSON-LD");
@@ -43,32 +48,20 @@ public class UpdateEntity extends HttpServlet {
             // Serialize as triples
             StringWriter sw = new StringWriter();
             model.write(sw, "N-TRIPLES", null);
+            String triples = sw.toString();
 
-            ret = sw.toString();
+            // Create SPARQL Update statements
+            // @TODO Investigate how to do this in ONE step (notice the ';')
+            String sparql = "delete { graph <" + page + "> { ?s ?o ?p . } }\n" +
+                            "where { graph <" + page + "> { ?s ?p ?o . } };\n" +
+                            "insert data { graph <" + page + "> {\n" + triples + "  }\n}\n";
 
-/*
-            Object jsonObject = JsonUtils.fromString(ret);
-            Object normalized = JsonLdProcessor.normalize(jsonObject);
-            String rdf = toString((RDFDataset)normalized);
-            // POST RDF to SPARQL Endpoint
-            // @TODO find actual URI
-            String page = obj.get("@id") + "/data";
-            String param = "delete { graph <" + page + "> { ?s ?o ?p . } } insert { graph <" + page + "> { " + rdf + " } } where { ?s ?o ?p . }";
-            ret = JsonUtils.toPrettyString(jsonObject) + "\n\n\n" + param;
-*/
-/*
-            URL url = new URL(server + "?update=" + URLEncoder.encode(param, "UTF-8"));
-            ret = url.toString();
-            URLConnection urlConnection = url.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                System.out.println(inputLine);
-            in.close();
-            */
+            // POST update to server
+            ret = Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
+            ret = e.getMessage();
         }
 
         PrintWriter out = response.getWriter();
