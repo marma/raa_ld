@@ -18,7 +18,7 @@
     </servlet-mapping>
     <context-param>
         <param-name>SparqlEndpoint</param-name>
-        <param-value>http://localhost:9999/blazegraph/sparql</param-value>
+        <param-value>http://localhost:9999/blazegraph/namespace/kb/sparql</param-value>
     </context-param>
     <session-config>
         <session-timeout>

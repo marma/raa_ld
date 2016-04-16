@@ -6,89 +6,57 @@ import java.util.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
-import com.github.jsonldjava.utils.*;
-import com.github.jsonldjava.core.*;
-
 import org.json.*;
+import org.apache.jena.rdf.model.*;
 
 /**
  * @author marma
  */
 public class UpdateEntity extends HttpServlet {
-    // @TODO static @context for now ...
-    static Map context = new TreeMap();
-    static {
-        context.put("@vocab", "https://kulturarvsdata.se/egenskap/");
-        context.put("org", "https://kulturarvsdata.se/aktör/organisation/");
-        context.put("typ", "https://kulturarvsdata.se/kategori/");
-        context.put("uppdrag", "https://kulturarvsdata.se/aktivitet/uppdrag/");
-        context.put("rapport", "https://kulturarvsdata.se/dokumentation/rapport/");
-        context.put("uppdragstyp", "https://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/");
+    static String sparqlEndpoint = null;
+    static JSONObject context = null;
 
-        Map amap = new TreeMap();
-        amap.put("@id", "https://kulturarvsdata.se/aktivitet/ärende/");
-        amap.put("@type", "@id");
-        context.put("ärendenr", amap);
+    @Override
+    public void init(ServletConfig config) {
+        sparqlEndpoint = config.getServletContext().getInitParameter("SparqlEndpoint");
 
-        Map omap = new TreeMap();
-        omap.put("@id", "organisation");
-        omap.put("@type", "@id");
-        context.put("organisation", omap);
-
-        Map aamap = new TreeMap();
-        aamap.put("@id", "ärende");
-        aamap.put("@type", "@id");
-        context.put("ärende", aamap);
-    }
-
-    public static String toString(RDFDataset dataset) {
-        StringBuffer sb = new StringBuffer();
-
-        for (Object o: (ArrayList)dataset.get("@default")) {
-            Map m = (Map)o;
-            sb.append("<");
-            sb.append(((Map)m.get("subject")).get("value"));
-            sb.append("> <");
-            sb.append(((Map)m.get("predicate")).get("value"));
-            sb.append("> ");
-
-            String t = (String)((Map)m.get("object")).get("type");
-
-            if (t.equals("IRI")) {
-                sb.append("<");
-                sb.append(((Map)m.get("object")).get("value"));
-                sb.append("> .");
-            } else {
-                sb.append("\"");
-                sb.append(((Map)m.get("object")).get("value"));
-                sb.append("\" .");
-            }
-        }
-
-        return sb.toString();
+        // Load @context from file
+        JSONTokener tokener = new JSONTokener(config.getServletContext().getResourceAsStream("/context.json"));
+        context = new JSONObject(tokener);
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/plain; charset=utf-8");
-        String server = getServletContext().getInitParameter("SparqlEndpoint");
         String ret = null;
 
         try {
-            // convert JSON-LD to RDF
-            JSONObject obj = new JSONObject(request.getParameter("entity"));
-            obj.put("@context", context);
-            ret = obj.toString();
+            // Add @context to JSON-LD
+            JSONObject entity = new JSONObject(request.getParameter("entity"));
+            entity.put("@context", context);
+            String jsonld = entity.toString();
+
+            // Read JSON-LD into a Model
+            Model model = ModelFactory.createDefaultModel();
+            model.read(new StringReader(jsonld), null, "JSON-LD");
+
+            // Serialize as triples
+            StringWriter sw = new StringWriter();
+            model.write(sw, "N-TRIPLES", null);
+
+            ret = sw.toString();
+
+/*
             Object jsonObject = JsonUtils.fromString(ret);
             Object normalized = JsonLdProcessor.normalize(jsonObject);
             String rdf = toString((RDFDataset)normalized);
-
             // POST RDF to SPARQL Endpoint
             // @TODO find actual URI
             String page = obj.get("@id") + "/data";
             String param = "delete { graph <" + page + "> { ?s ?o ?p . } } insert { graph <" + page + "> { " + rdf + " } } where { ?s ?o ?p . }";
-            ret = param;
-
+            ret = JsonUtils.toPrettyString(jsonObject) + "\n\n\n" + param;
+*/
+/*
             URL url = new URL(server + "?update=" + URLEncoder.encode(param, "UTF-8"));
             ret = url.toString();
             URLConnection urlConnection = url.openConnection();
@@ -97,6 +65,7 @@ public class UpdateEntity extends HttpServlet {
             while ((inputLine = in.readLine()) != null)
                 System.out.println(inputLine);
             in.close();
+            */
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
