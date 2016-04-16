@@ -14,11 +14,15 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetEntity</servlet-name>
-        <url-pattern>/aktivitet/uppdrag/*,/aktivitet/ärende/*,/aktör/organisation/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
     <context-param>
-        <param-name>SparqlEndpoint</param-name>
-        <param-value>http://localhost:9999/blazegraph/namespace/kb/sparql</param-value>
+        <param-name>QueryEndpoint</param-name>
+        <param-value></param-value>
+    </context-param>
+    <context-param>
+        <param-name>UpdateEndpoint</param-name>
+        <param-value></param-value>
     </context-param>
     <session-config>
         <session-timeout>
