@@ -53,10 +53,10 @@ public class UpdateEntity extends HttpServlet {
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
             String sparql = "clear graph <" + page + ">\n;" +
-                            "insert data { graph <" + page + "> {\n" + triples + "  }\n}\n";
+                            "insert data {\n  graph <" + page + "> {    \n" + triples + "  }\n}\n";
 
             // POST update to server
-            ret = Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
+            ret = "REPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
