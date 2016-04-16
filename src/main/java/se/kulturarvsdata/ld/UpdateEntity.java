@@ -52,8 +52,7 @@ public class UpdateEntity extends HttpServlet {
 
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
-            String sparql = "delete { graph <" + page + "> { ?s ?o ?p . } }\n" +
-                            "where { graph <" + page + "> { ?s ?p ?o . } };\n" +
+            String sparql = "clear graph <" + page + ">\n;" +
                             "insert data { graph <" + page + "> {\n" + triples + "  }\n}\n";
 
             // POST update to server
