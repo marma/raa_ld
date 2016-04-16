@@ -16,6 +16,7 @@ repositories {
 dependencies {
     compile "javax.servlet:servlet-api:2.5"
     compile "org.apache.jena:jena-core:3.0.1"
+    compile "org.apache.jena:jena-arq:3.0.1"
     compile "org.json:json:20151123"
     compile "commons-httpclient:commons-httpclient:3.1"
 }
