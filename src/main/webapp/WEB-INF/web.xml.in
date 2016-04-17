@@ -8,9 +8,17 @@
          <servlet-name>GetEntity</servlet-name>
          <servlet-class>se.kulturarvsdata.ld.GetEntity</servlet-class>
     </servlet>
+    <servlet>
+         <servlet-name>UpdateRawJsonLD</servlet-name>
+         <servlet-class>se.kulturarvsdata.ld.UpdateRawJsonLD</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>UpdateEntity</servlet-name>
         <url-pattern>/updateentity</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateRawJsonLD</servlet-name>
+        <url-pattern>/updateraw</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>GetEntity</servlet-name>
