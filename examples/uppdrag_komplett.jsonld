@@ -1,0 +1,31 @@
+{
+    "@context": {
+        "@vocab" : "https://kulturarvsdata.se/egenskap/",
+        "org" : "https://kulturarvsdata.se/aktör/organisation/",
+        "uppdrag" : "https://kulturarvsdata.se/aktivitet/uppdrag/",
+        "rapport" : "https://kulturarvsdata.se/dokumentation/rapport/",
+        "typ" : "https://kulturarvsdata.se/kategori/",
+        "uppdragstyp" : "http://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/",
+        "ärendenr" : {
+            "@type" : "@id",
+            "@id" : "http://kulturarvsdata.se/aktivitet/ärende/"
+        },
+        "organisation" : {
+            "@type" : "@id",
+            "@id" : "organisation"
+        },
+        "rende" : {
+            "@type" : "@id",
+            "@id" : "rende"
+        },
+        "utförare" : {
+            "@type" : "@id",
+            "@id" : "utförare"
+        }
+    },
+    "@id": "uppdrag:01b2bce8-011b-4f7e-bca3-97dd84e50f14",
+    "@type": "uppdragstyp:ArkeologiskUndersökning",
+    "utförare": "org:814801-2019",
+    "rende": "org:S2011-123",
+    "test" : "bla"
+}
