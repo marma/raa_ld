@@ -28,6 +28,7 @@ public class UpdateEntity extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("text/plain; charset=utf-8");
         String ret = null;
 
@@ -49,6 +50,8 @@ public class UpdateEntity extends HttpServlet {
             StringWriter sw = new StringWriter();
             model.write(sw, "N-TRIPLES", null);
             String triples = sw.toString();
+
+            System.out.println(triples);
 
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
