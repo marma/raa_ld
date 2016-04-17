@@ -32,7 +32,7 @@ public class UpdateRawJsonLD extends HttpServlet {
             // find page used for removing old statements from triple store
             // @TODO Either enforce complete IRI in @id or expand it
             JSONObject entity = new JSONObject(request.getParameter("entity"));
-            String page = request.getParameter("page") != null? request.getParameter("page"):entity.get("@id").toString() + "/data";
+            String graph = request.getParameter("graph") != null? request.getParameter("graph"):entity.get("@id").toString() + "/data";
 
             // Read JSON-LD into a Model
             Model model = ModelFactory.createDefaultModel();
@@ -45,8 +45,8 @@ public class UpdateRawJsonLD extends HttpServlet {
 
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
-            String sparql = "clear graph <" + page + ">\n;" +
-                            "insert data {\n  graph <" + page + "> {    \n" + triples + "  }\n}\n";
+            String sparql = "clear graph <" + graph + ">\n;" +
+                            "insert data {\n  graph <" + graph + "> {    \n" + triples + "  }\n}\n";
 
             // POST update to server, print result
             out.println("RESPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString());
