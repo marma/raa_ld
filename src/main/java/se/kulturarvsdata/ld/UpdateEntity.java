@@ -51,8 +51,6 @@ public class UpdateEntity extends HttpServlet {
             model.write(sw, "N-TRIPLES", null);
             String triples = sw.toString();
 
-            System.out.println(triples);
-
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
             String sparql = "clear graph <" + page + ">\n;" +

@@ -30,6 +30,7 @@ public class GetEntity extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         // Build SPARQL query
+        // @TODO Use SPARQL Construct to get more data if necessary
         String sparql = "DESCRIBE <" + uri + ">";
 
         // Query SPARQL endpoint
