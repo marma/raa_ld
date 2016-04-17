@@ -1,7 +1,5 @@
 # RAÄ LD för DAP
 
-    DISCLAIMER: denna programvara, och framförallt dokumentationen av den, är under uppbyggnad
-
 ## Krav
 
 ### Komponenter
