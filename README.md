@@ -48,6 +48,6 @@ Ladda JSON-LD med eget @context
 
     # curl --data-urlencoded "entity=`cat <infil>`"  http://localhost:8080/updateentity
 
-Ladda JSON-LD med eget @context, men som innehåller en lista med entiteter, dvs inet @id under roten
+Ladda JSON-LD med eget @context, men som innehåller en lista med entiteter, dvs inget @id under roten
 
-    # curl --data-urlencoded "entity=`cat <infil>`"  "http://localhost:8080/updateentity?graph=<graf>"
+    # curl --data-urlencoded "entity=`cat <infil>`"  "http://localhost:8080/updateraw?graph=<graf>"
