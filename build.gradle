@@ -34,4 +34,5 @@ war {
 
 jettyRun {
     contextPath = ""
+    httpPort = 8080
 }
