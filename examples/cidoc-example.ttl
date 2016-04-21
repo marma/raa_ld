@@ -1,0 +1,39 @@
+@prefix owl: <http://www.w3.org/2002/07/owl#> . # OWL
+@prefix uppdrag: <https://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/> . # RAÄ URIs representing archaeological fieldwork
+@prefix lämning: <https://kulturarvsdata.se/objekt/laemning/> . # RAÄ URIs representing sites and monuments
+@prefix lämningstyp: <https://kulturarvsdata.se/kategori/laemningstyp/1.0#> . # RAÄ Monuments Types Thesuarus
+@prefix fynd: <https://kulturarvsdata.se/objekt/fynd/> . # RAÄ URIs representing small finds
+@prefix rapport: <https://kulturarvsdata.se/dokumentation/rapport/> . # RAÄ URIs representing fieldwork reports
+@prefix grävföretag: <https://kulturarvsdata.se/aktoer/organisation/> . # RAÄ URIs representing fieldwork units
+@prefix crm: <http://cidoc-crm.org/cidoc-crm/> . # The CIDOC CRM
+@prefix crm-sci: <http://www.ics.forth.gr/isl/CRMsci/> . # CRM-Sci extension
+@prefix crm-archaeo: <http://www.ics.forth.gr/isl/CRMarchaeo/> . # CRM-Archaeo extension
+@prefix pdo: <http://n2t.net/ark:/99152/> . # PeriodO
+
+lämning:7b70c89a-c191-4d73-ac40-4455fd5dd2a7 a crm:E53_Place ;
+                                             owl:sameAs <http://kulturarvsdata.se/raa/fmi/10048200010001> ;
+                                             crm:P2_has_type lämningstyp:runsten ;
+											 crm:P4_has_time_span pdo:p0vn2fr9whq ,
+											                      <http://mis.historiska.se/rdf/period#p322> ;
+                                             crm:P70i_is_documented_in <http://libris.kb.se/bib/7619196> ,
+                                                                       rapport:48fa0a32-b5ff-414f-ba7e-5ae70eba10a9 ;
+                                             crm-sci:O21i_witnessed _:encounter1 .
+
+uppdrag:867e82c2-5102-4998-9f31-f5cb08fe91eb a crm-archaeo:A1_Excavation_Process_Unit ;
+                                             crm-archaeo:AP3_excavated lämning:7b70c89a-c191-4d73-ac40-4455fd5dd2a7 ;
+                                             crm:P14_carried_out_by grävföretag:80013bbe-9d8e-412f-b028-4a63aa923180 ;
+                                             crm:P70i_is_documented_in rapport:48fa0a32-b5ff-414f-ba7e-5ae70eba10a9 ;
+                                             crm:P9_consists_of _:encounter1 .
+
+_:encounter1 a crm-sci:S19_Encounter_Event ;
+             crm-sci:O19_has_found_object fynd:e83ea8c9-cbea-4aa4-90fa-90bd170a63a0 ;
+             crm-sci:O21_has_found_at lämning:7b70c89a-c191-4d73-ac40-4455fd5dd2a7 .
+
+fynd:e83ea8c9-cbea-4aa4-90fa-90bd170a63a0 a crm:E22_Man-Made_Object ;
+                                          crm-sci:O19i_was_object_found_by _:encounter1 .
+
+rapport:48fa0a32-b5ff-414f-ba7e-5ae70eba10a9 a crm:E31_Document ;
+                                             crm:P70_documents lämning:7b70c89a-c191-4d73-ac40-4455fd5dd2a7 ,
+                                                               uppdrag:867e82c2-5102-4998-9f31-f5cb08fe91eb .
+
+grävföretag:80013bbe-9d8e-412f-b028-4a63aa923180 a crm:E40_Legal_Body .
