@@ -14,18 +14,18 @@
             "@type" : "@id",
             "@id" : "organisation"
         },
-        "rende" : {
+        "ärende" : {
             "@type" : "@id",
-            "@id" : "rende"
+            "@id" : "ärende"
         },
         "utförare" : {
             "@type" : "@id",
             "@id" : "utförare"
         }
     },
+
     "@id": "uppdrag:01b2bce8-011b-4f7e-bca3-97dd84e50f14",
     "@type": "uppdragstyp:ArkeologiskUndersökning",
     "utförare": "org:814801-2019",
-    "rende": "org:S2011-123",
-    "test" : "bla"
+    "ärende": "ärendenr:S2011-123"
 }

@@ -13,38 +13,30 @@ import org.apache.http.client.fluent.*;
 /**
  * @author marma
  */
-public class UpdateEntity extends HttpServlet {
+public class UpdateRawJsonLD extends HttpServlet {
     static String updateEndpoint = null;
     static JSONObject context = null;
 
     @Override
     public void init(ServletConfig config) {
         updateEndpoint = config.getServletContext().getInitParameter("UpdateEndpoint");
-
-        // Load @context from file
-        JSONTokener tokener = new JSONTokener(config.getServletContext().getResourceAsStream("/context.json"));
-        context = new JSONObject(tokener);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         response.setContentType("text/plain; charset=utf-8");
-        String ret = null;
+        PrintWriter out = response.getWriter();
 
         try {
-            // Add @context to JSON-LD
-            JSONObject entity = new JSONObject(request.getParameter("entity"));
-            entity.put("@context", context);
-            String jsonld = entity.toString();
-
             // find page used for removing old statements from triple store
             // @TODO Either enforce complete IRI in @id or expand it
-            String page = entity.get("@id").toString() + "/data";
+            JSONObject entity = new JSONObject(request.getParameter("entity"));
+            String graph = request.getParameter("graph") != null? request.getParameter("graph"):entity.get("@id").toString() + "/data";
 
             // Read JSON-LD into a Model
             Model model = ModelFactory.createDefaultModel();
-            model.read(new StringReader(jsonld), null, "JSON-LD");
+            model.read(new StringReader(entity.toString()), null, "JSON-LD");
 
             // Serialize as triples
             StringWriter sw = new StringWriter();
@@ -53,19 +45,17 @@ public class UpdateEntity extends HttpServlet {
 
             // Create SPARQL Update statements
             // @TODO Investigate how to do this in ONE step (notice the ';')
-            String sparql = "clear graph <" + page + ">\n;" +
-                            "insert data {\n  graph <" + page + "> {    \n" + triples + "  }\n}\n";
+            String sparql = "clear graph <" + graph + ">\n;" +
+                            "insert data {\n  graph <" + graph + "> {    \n" + triples + "  }\n}\n";
 
-            // POST update to server
-            ret = "REPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
+            // POST update to server, print result
+            out.println("RESPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString());
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
-            ret = e.getMessage();
+            out.println(e.getMessage());
         }
 
-        PrintWriter out = response.getWriter();
-        out.println(ret);
         out.close();
     }
 }

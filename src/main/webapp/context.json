@@ -1,20 +1,24 @@
 {
-  "@vocab" : "https://kulturarvsdata.se/egenskap/",
-  "org" : "https://kulturarvsdata.se/aktör/organisation/",
-  "uppdrag" : "https://kulturarvsdata.se/aktivitet/uppdrag/",
-  "rapport" : "https://kulturarvsdata.se/dokumentation/rapport/",
-  "typ" : "https://kulturarvsdata.se/kategori/",
-  "uppdragstyp" : "https://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/",
-  "ärendenr" : {
-    "@type" : "@id",
-    "@id" : "https://kulturarvsdata.se/aktivitet/ärende/"
-  },
-  "organisation" : {
-    "@type" : "@id",
-    "@id" : "organisation"
-  },
-  "ärende" : {
-    "@type" : "@id",
-    "@id" : "ärende"
-  }
+    "@vocab" : "https://kulturarvsdata.se/egenskap/",
+    "org" : "https://kulturarvsdata.se/aktör/organisation/",
+    "uppdrag" : "https://kulturarvsdata.se/aktivitet/uppdrag/",
+    "rapport" : "https://kulturarvsdata.se/dokumentation/rapport/",
+    "typ" : "https://kulturarvsdata.se/kategori/",
+    "uppdragstyp" : "http://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/",
+    "ärendenr" : {
+        "@type" : "@id",
+        "@id" : "http://kulturarvsdata.se/aktivitet/ärende/"
+    },
+    "organisation" : {
+        "@type" : "@id",
+        "@id" : "organisation"
+    },
+    "ärende" : {
+        "@type" : "@id",
+        "@id" : "ärende"
+    },
+    "utförare" : {
+        "@type" : "@id",
+        "@id" : "utförare"
+    }
 }
