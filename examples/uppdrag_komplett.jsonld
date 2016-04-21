@@ -22,6 +22,12 @@
         "utförare" : {
             "@type" : "@id",
             "@id" : "utförare"
+        },
+        "geometri" : {
+            "@type" : "http://www.opengis.net/doc/IS/geosparql/1.0/wktLiteral"
+        },
+        "mittpunkt" : {
+            "@type" : "http://www.opengis.net/doc/IS/geosparql/1.0/wktLiteral"
         }
     },
 
@@ -32,12 +38,12 @@
     "område": [
         {
             "@type": "områdestyp:Undersökningsområde",
-            "mittpunkt": "48.13743#11.57549",
+            "mittpunkt": "POINT(48.13743 11.57549)",
             "geometri": "POLYGON(...)"
         },
         {
             "@type": "områdestyp:Provgrop",
-            "mittpunkt": "48.13743#11.57549",
+            "mittpunkt": "POINT(48.13743 11.57549)",
             "geometri": "POLYGON(...)"
         }
     ]

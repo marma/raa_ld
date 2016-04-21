@@ -20,5 +20,11 @@
     "utförare" : {
         "@type" : "@id",
         "@id" : "utförare"
+    },
+    "geometri" : {
+        "@type" : "http://www.opengis.net/ont/sf#wktLiteral"
+    },
+    "mittpunkt" : {
+        "@type" : "http://www.opengis.net/ont/sf#wktLiteral"
     }
 }

@@ -7,6 +7,7 @@
 @prefix org: <https://kulturarvsdata.se/aktör/organisation/> .
 @prefix uppdragstyp: <https://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/> .
 @prefix ksamsok: <http://kulturarvsdata.se/raa/fmi/> .
+@prefix geo: <http://www.opengis.net/doc/IS/geosparql/1.0/> .
 
 org:123456-78 a typ:Organisation ;
     :namn "Länsstyrelsen" ;
@@ -18,9 +19,14 @@ org:814801-2019 a typ:Organisation ;
 
 uppdrag:01b2bce8-011b-4f7e-bca3-97dd84e50f14 a uppdragstyp:ArkeologiskUndersökning ;
     :utförare org:814801-2019 ;
-    :ärende ärende:S2011-123 ;
-    :lämning ksamsok:10048200010001, ksamsok:10048201370002, ksamsok:10048201370001, ksamsok:12000000052182 ;
-    :dokumenterad rapport:4821 .
+    :ärende <https://kulturarvsdata.se/aktivitet/ärende/S2011-123> ;
+    :undersökt ksamsok:10048200010001, ksamsok:10048201370002, ksamsok:10048201370001, ksamsok:12000000052182 ;
+    :dokumenterad rapport:4821 ;
+    :område [
+        a :Undersökningsområde ;
+        :mittpunkt "POINT(48.13743 11.57549)"^^geo:wktLiteral ;
+        :geometri "POLYGON(...)"^^geo:wktLiteral .
+    ] .
 
 ärende:S2011-123 a typ:Ärende ;
     :organisation org:202100-2247 ;
