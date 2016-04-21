@@ -1,0 +1,22 @@
+PREFIX : <https://kulturarvsdata.se/egenskap/>
+PREFIX geoliteral: <http://www.bigdata.com/rdf/geospatial/literals/v1#>
+PREFIX geo: <http://www.bigdata.com/rdf/geospatial#>
+PREFIX example: <http://www.example.com/>
+
+# OBS! Blazegraph-specifikt (https://wiki.blazegraph.com/wiki/index.php/GeoSpatial)
+
+select ?uppdrag ?typ ?punkt
+where {
+  graph ?g {
+    SERVICE geo:search {
+        ?område geo:search "inCircle" .
+        ?område geo:searchDatatype geoliteral:lat-lon .
+        ?område geo:predicate :mittpunkt .
+        ?område geo:spatialCircleCenter "48.13743#11.57549" .
+        ?område geo:spatialCircleRadius "100" .
+    }
+    ?uppdrag :område ?område .
+    ?område a ?typ .
+    ?område :mittpunkt ?punkt .
+  }
+}
