@@ -46,6 +46,40 @@ public class UpdateEntity extends HttpServlet {
             Model model = ModelFactory.createDefaultModel();
             model.read(new StringReader(jsonld), null, "JSON-LD");
 
+            // Find coordinates and add Blazegraph geo triples
+            // @TODO Make this configurable to support not just Blazegraph
+            // (https://wiki.blazegraph.com/wiki/index.php/GeoSpatial)
+            Model geomodel = ModelFactory.createDefaultModel();
+            StmtIterator iter = model.listStatements();
+            while (iter.hasNext()) {
+                Statement statement = iter.nextStatement();
+                Resource resource = statement.getSubject();
+                org.apache.jena.rdf.model.Property predicate = statement.getPredicate();
+                RDFNode node = statement.getObject();
+
+                if (node.isLiteral() && node.asLiteral().getDatatypeURI().equals("http://www.opengis.net/ont/sf#wktLiteral")) {
+                    String s = node.asLiteral().getString();
+                    System.out.println(node.asLiteral().getDatatype().getClass());
+
+                    // Is it a point?
+                    if (s.startsWith("POINT(")) {
+                        System.out.println(statement);
+
+                        String p = s.substring(6).replace(' ', '#').substring(0, s.length()-7);
+                        geomodel.add(
+                            geomodel.createStatement(
+                                resource,
+                                predicate,
+                                model.createTypedLiteral(p, new org.apache.jena.datatypes.BaseDatatype("http://www.bigdata.com/rdf/geospatial/literals/v1#lat-lon"))
+                            )
+                        );
+
+                        System.out.println(p);
+                    }
+                }
+            }
+            model.add(geomodel);
+
             // Serialize as triples
             StringWriter sw = new StringWriter();
             model.write(sw, "N-TRIPLES", null);
