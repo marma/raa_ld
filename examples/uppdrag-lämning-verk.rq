@@ -1,0 +1,33 @@
+# Federated query tvärs ett uppdragsregister, lämningsregister, och Libris.
+# För ett uppdrag, visa dess uppdragstyp, namnet på utförande organisationen, ärendenummret hos länsstyrelsen, vilka sorters lämningar (lämningstyper) undersöktes, och titel + förefattare för böcker/artiklar som har skrivits om lämningarna:
+prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix fmis: <http://kulturarvsdata.se/raa/fmi/>
+prefix soch: <http://kulturarvsdata.se/ksamsok#>
+#prefix libris: <http://libris.kb.se/resource/bib/>
+prefix dc: <http://purl.org/dc/elements/1.1/>
+#prefix uppdragstyp: <http://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/>
+prefix egenskap: <https://kulturarvsdata.se/egenskap/>
+prefix crm-archaeo: <http://www.ics.forth.gr/isl/CRMarchaeo/>
+#prefix crm-sci: <http://www.ics.forth.gr/isl/CRMsci/>
+#prefix crm: <http://www.cidoc-crm.org/cidoc-crm/>
+#prefix geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT DISTINCT ?uppdrag ?uppdragstyp ?utförarenamn ?ärende ?lämningsetikett ?titel ?författare
+WHERE {
+  ?uppdrag crm-archaeo:AP3_excavated ?lämning .
+  ?lämning soch:isDescribedBy ?verk ;
+           soch:itemLabel ?lämningsetikett .
+  # Här ersätter vi de felaktiga <http://libris.kb.se/bib/> URIer vi har med korrekta <http://libris.kb.se/resource/bib/> sådana:
+  BIND(URI(REPLACE(STR(?verk), 'se/bib/', 'se/resource/bib/')) as ?verk2) .
+  SERVICE <http://libris.kb.se/sparql> {
+	?verk2 dc:creator ?författare ;
+           dc:title ?titel .
+  }
+  SERVICE <http://ul-tonilabb01.testraa.se:8080/blazegraph/namespace/raa.se/sparql> {
+	?uppdrag rdf:type ?uppdragstyp ;
+	         egenskap:utförare ?utförare ;
+	         egenskap:ärende ?ärende .
+    ?utförare egenskap:namn ?utförarenamn .
+  }
+}
+
