@@ -6,6 +6,7 @@
         "rapport" : "https://kulturarvsdata.se/dokumentation/rapport/",
         "typ" : "https://kulturarvsdata.se/kategori/",
         "uppdragstyp" : "http://kulturarvsdata.se/aktivitet/arkeologisktuppdrag/",
+        "områdestyp" : "http://kulturarvsdata.se/kategori/geometri/",
         "ärendenr" : {
             "@type" : "@id",
             "@id" : "http://kulturarvsdata.se/aktivitet/ärende/"
@@ -21,11 +22,29 @@
         "utförare" : {
             "@type" : "@id",
             "@id" : "utförare"
+        },
+        "geometri" : {
+            "@type" : "http://www.opengis.net/doc/IS/geosparql/1.0/wktLiteral"
+        },
+        "mittpunkt" : {
+            "@type" : "http://www.opengis.net/doc/IS/geosparql/1.0/wktLiteral"
         }
     },
 
     "@id": "uppdrag:01b2bce8-011b-4f7e-bca3-97dd84e50f14",
     "@type": "uppdragstyp:ArkeologiskUndersökning",
     "utförare": "org:814801-2019",
-    "ärende": "ärendenr:S2011-123"
+    "ärende": "ärendenr:123/S2011-123",
+    "område": [
+        {
+            "@type": "områdestyp:Undersökningsområde",
+            "mittpunkt": "POINT (48.13743 11.57549)",
+            "geometri": "POLYGON(...)"
+        },
+        {
+            "@type": "områdestyp:Provgrop",
+            "mittpunkt": "POINT (48.13743 11.57549)",
+            "geometri": "POLYGON(...)"
+        }
+    ]
 }

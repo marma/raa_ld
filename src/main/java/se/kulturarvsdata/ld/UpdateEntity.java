@@ -15,7 +15,7 @@ import org.apache.http.client.fluent.*;
  */
 public class UpdateEntity extends HttpServlet {
     static String updateEndpoint = null;
-    static JSONObject context = null;
+    static JSONObject context = null, convert = null;
 
     @Override
     public void init(ServletConfig config) {
@@ -24,6 +24,10 @@ public class UpdateEntity extends HttpServlet {
         // Load @context from file
         JSONTokener tokener = new JSONTokener(config.getServletContext().getResourceAsStream("/context.json"));
         context = new JSONObject(tokener);
+
+        // Load convert.json
+        JSONTokener tokener2 = new JSONTokener(config.getServletContext().getResourceAsStream("/convert.json"));
+        convert = new JSONObject(tokener2);
     }
 
     @Override
@@ -46,6 +50,35 @@ public class UpdateEntity extends HttpServlet {
             Model model = ModelFactory.createDefaultModel();
             model.read(new StringReader(jsonld), null, "JSON-LD");
 
+            // Find coordinates and add Blazegraph geo triples
+            // @TODO Make this configurable to support not just Blazegraph
+            // (https://wiki.blazegraph.com/wiki/index.php/GeoSpatial)
+            Model geomodel = ModelFactory.createDefaultModel();
+            StmtIterator iter = model.listStatements();
+            while (iter.hasNext()) {
+                Statement statement = iter.nextStatement();
+                Resource resource = statement.getSubject();
+                org.apache.jena.rdf.model.Property predicate = statement.getPredicate();
+                RDFNode node = statement.getObject();
+
+                if (node.isLiteral() && node.asLiteral().getDatatypeURI().equals("http://www.opengis.net/ont/sf#wktLiteral")) {
+                    String s = node.asLiteral().getString().trim();
+
+                    // Is it a point?
+                    if (s.startsWith("POINT (")) {
+                        String p = s.substring(7).replace(' ', '#').substring(0, s.length()-8);
+                        geomodel.add(
+                            geomodel.createStatement(
+                                resource,
+                                predicate,
+                                model.createTypedLiteral(p, "http://www.bigdata.com/rdf/geospatial/literals/v1#lat-lon")
+                            )
+                        );
+                    }
+                }
+            }
+            model.add(geomodel);
+
             // Serialize as triples
             StringWriter sw = new StringWriter();
             model.write(sw, "N-TRIPLES", null);
@@ -57,7 +90,7 @@ public class UpdateEntity extends HttpServlet {
                             "insert data {\n  graph <" + page + "> {    \n" + triples + "  }\n}\n";
 
             // POST update to server
-            ret = "REPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
+            ret = sparql + "\n\nRESPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
