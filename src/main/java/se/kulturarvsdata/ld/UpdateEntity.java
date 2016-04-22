@@ -15,7 +15,7 @@ import org.apache.http.client.fluent.*;
  */
 public class UpdateEntity extends HttpServlet {
     static String updateEndpoint = null;
-    static JSONObject context = null;
+    static JSONObject context = null, convert = null;
 
     @Override
     public void init(ServletConfig config) {
@@ -24,6 +24,10 @@ public class UpdateEntity extends HttpServlet {
         // Load @context from file
         JSONTokener tokener = new JSONTokener(config.getServletContext().getResourceAsStream("/context.json"));
         context = new JSONObject(tokener);
+
+        // Load convert.json
+        JSONTokener tokener2 = new JSONTokener(config.getServletContext().getResourceAsStream("/convert.json"));
+        convert = new JSONObject(tokener2);
     }
 
     @Override
@@ -58,23 +62,18 @@ public class UpdateEntity extends HttpServlet {
                 RDFNode node = statement.getObject();
 
                 if (node.isLiteral() && node.asLiteral().getDatatypeURI().equals("http://www.opengis.net/ont/sf#wktLiteral")) {
-                    String s = node.asLiteral().getString();
-                    System.out.println(node.asLiteral().getDatatype().getClass());
+                    String s = node.asLiteral().getString().trim();
 
                     // Is it a point?
-                    if (s.startsWith("POINT(")) {
-                        System.out.println(statement);
-
-                        String p = s.substring(6).replace(' ', '#').substring(0, s.length()-7);
+                    if (s.startsWith("POINT (")) {
+                        String p = s.substring(7).replace(' ', '#').substring(0, s.length()-8);
                         geomodel.add(
                             geomodel.createStatement(
                                 resource,
                                 predicate,
-                                model.createTypedLiteral(p, new org.apache.jena.datatypes.BaseDatatype("http://www.bigdata.com/rdf/geospatial/literals/v1#lat-lon"))
+                                model.createTypedLiteral(p, "http://www.bigdata.com/rdf/geospatial/literals/v1#lat-lon")
                             )
                         );
-
-                        System.out.println(p);
                     }
                 }
             }
@@ -91,7 +90,7 @@ public class UpdateEntity extends HttpServlet {
                             "insert data {\n  graph <" + page + "> {    \n" + triples + "  }\n}\n";
 
             // POST update to server
-            ret = "REPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
+            ret = sparql + "\n\nRESPONSE:" + Request.Post(updateEndpoint).bodyForm(Form.form().add("update", sparql).build()).execute().returnContent().asString();
         } catch (Exception e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

@@ -38,12 +38,12 @@
     "område": [
         {
             "@type": "områdestyp:Undersökningsområde",
-            "mittpunkt": "POINT(48.13743 11.57549)",
+            "mittpunkt": "POINT (48.13743 11.57549)",
             "geometri": "POLYGON(...)"
         },
         {
             "@type": "områdestyp:Provgrop",
-            "mittpunkt": "POINT(48.13743 11.57549)",
+            "mittpunkt": "POINT (48.13743 11.57549)",
             "geometri": "POLYGON(...)"
         }
     ]
